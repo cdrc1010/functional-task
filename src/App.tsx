@@ -92,7 +92,7 @@ const App = () => {
     <Box>
       Add
       <Typography sx={{ fontWeight: 700, color: "#333" }}>
-        {selectedSkus.toString()}
+        {selectedSkus.toString().toUpperCase()}
       </Typography>
       successfully.
     </Box>
@@ -102,7 +102,16 @@ const App = () => {
     <div>
       <ToastContainer autoClose={1000} />
 
-      <CustomButton clickHandler={handleOpen}>Open modal</CustomButton>
+      <CustomButton
+        clickHandler={handleOpen}
+        sx={{
+          border: "1px solid #242424",
+          color: "#242424",
+          textTransform: "uppercase",
+        }}
+      >
+        Open modal
+      </CustomButton>
 
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
@@ -222,8 +231,8 @@ const App = () => {
                   },
                 }}
                 clickHandler={() => {
-                  toast.success(toastAddedMessage)
-                  setOpen(false)
+                  toast.success(toastAddedMessage);
+                  setOpen(false);
                 }}
                 isDisabled={disableCta}
               >
