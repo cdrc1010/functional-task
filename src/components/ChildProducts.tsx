@@ -23,8 +23,8 @@ const ChildProducts: FC<ChildProductsProps> = ({ nestedProducts }) => {
     setSelectedChildProduct((prev) => {
       if (checked) {
         return [
-          ...prev,
           { ...product, quantity: product.quantity ? product.quantity : 1 },
+          ...prev,
         ];
       } else {
         return prev.filter((item) => item.id !== product.id);
@@ -35,7 +35,9 @@ const ChildProducts: FC<ChildProductsProps> = ({ nestedProducts }) => {
   const quantityHandler = (value: number, productId: string) => {
     setSelectedChildProduct((prev) => {
       return prev.map((product) =>
-        product.id === productId ? { ...product, quantity: value } : product
+        product.id === productId
+          ? { ...product, quantity: value <= 0 ? 1 : value }
+          : product
       );
     });
   };

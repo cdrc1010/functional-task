@@ -29,7 +29,15 @@ const SelectedChildProducts: FC<SelectedChildProductsProps> = ({}) => {
     setSelectedChildProduct((prev) => {
       return prev.filter((product) => product.id !== id);
     });
-    toast.success(`Delete SKU: ${sku} successfully.`);
+    toast.success(() => (
+      <Box component="span">
+        Delete{" "}
+        <Typography component="span" sx={{ fontWeight: 700, color: "#333" }}>
+          {sku.toString().toUpperCase()}
+        </Typography>{" "}
+        successfully.
+      </Box>
+    ));
   };
 
   return (

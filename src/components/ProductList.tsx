@@ -6,14 +6,12 @@ import {
   Typography,
 } from "@mui/material";
 import products from "../data/products.json";
-import { useEffect, useState, type Dispatch, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
 import ChildProducts from "./ChildProducts";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type ProductListProps = {
-  setSelectProduct: Dispatch<React.SetStateAction<string>>;
-  selectedProduct: string;
   searchText?: string;
   selectedSupplier: string;
 };
@@ -28,8 +26,6 @@ const listItem = {
 };
 
 const ProductList: FC<ProductListProps> = ({
-  setSelectProduct,
-  selectedProduct,
   searchText,
   selectedSupplier,
 }) => {
@@ -37,14 +33,14 @@ const ProductList: FC<ProductListProps> = ({
   const dataBasedOnSelectedSupplier = data.filter(
     (products) => products.supplierId === selectedSupplier
   );
-  const [childProducts, setChildProducts] = useState<any[]>();
   const [filteredData, setFilteredData] = useState<any[]>(
     dataBasedOnSelectedSupplier
   );
 
-  const selectProductHandler = (id: string, nestedProducts: any[]) => {
+  const [selectedProductId, setSelectProduct] = useState("");
+
+  const selectProductHandler = (id: string) => {
     setSelectProduct(id);
-    setChildProducts(nestedProducts);
   };
 
   useEffect(() => {
@@ -59,27 +55,23 @@ const ProductList: FC<ProductListProps> = ({
     }
   }, [searchText]);
 
-  console.log("selectedProduct: ", selectedProduct);
-
   return (
     <List sx={listStyle}>
       {filteredData.map((product, index) => {
-        const expandSelectedProduct = selectedProduct === product.id;
+        const expandSelectedProduct = selectedProductId === product.id;
         return (
           <ListItem
             key={index}
-            onClick={() =>
-              selectProductHandler(product.id, product.childProducts)
-            }
+            onClick={() => selectProductHandler(product.id)}
             sx={{
               ...listItem,
-              bgcolor: (selectedProduct === product.id && "#F3F4F6") || "",
+              bgcolor: (selectedProductId === product.id && "#F3F4F6") || "",
             }}
           >
             <ListItemButton sx={{ width: "100%" }}>
               <ListItemText primary={product.name} />
               <Typography>
-                {selectedProduct === product.id ? (
+                {selectedProductId === product.id ? (
                   <KeyboardArrowDownIcon />
                 ) : (
                   <KeyboardArrowRightIcon />
@@ -87,7 +79,7 @@ const ProductList: FC<ProductListProps> = ({
               </Typography>
             </ListItemButton>
             {expandSelectedProduct && (
-              <ChildProducts nestedProducts={childProducts} />
+              <ChildProducts nestedProducts={product.childProducts} />
             )}
           </ListItem>
         );

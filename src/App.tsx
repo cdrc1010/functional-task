@@ -20,7 +20,7 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: "70%",
   height: "90vh",
-  bgcolor: "background.paper",
+  background: "#fff",
   borderRadius: "10px",
   padding: "20px 10px",
   overFlowY: "scroll",
@@ -48,7 +48,6 @@ const productActions = {
 const App = () => {
   const [open, setOpen] = useState(false);
   const [selectSupplier, setSelectSupplier] = useState("");
-  const [selectProduct, setSelectProduct] = useState("");
   const [searchText, setSearchText] = useState<string>("");
   const [label, setLabel] = useState<string>("");
   const { disableCta, selectedChildProduct, currentStep, setCurrentStep } =
@@ -64,7 +63,6 @@ const App = () => {
     switch (currentStep) {
       case "selectedProducts":
         setCurrentStep("products");
-        setLabel("Selection");
         break;
       case "products":
         setCurrentStep("");
@@ -89,17 +87,24 @@ const App = () => {
   const selectedSkus = selectedChildProduct.map((item) => item.sku);
 
   const toastAddedMessage = (
-    <Box>
-      Add
-      <Typography sx={{ fontWeight: 700, color: "#333" }}>
+    <Box component="span">
+      Add{" "}
+      <Box component="span" sx={{ fontWeight: 700, color: "#333" }}>
         {selectedSkus.toString().toUpperCase()}
-      </Typography>
+      </Box>{" "}
       successfully.
     </Box>
   );
 
   return (
-    <div>
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <ToastContainer autoClose={1000} />
 
       <CustomButton
@@ -127,22 +132,28 @@ const App = () => {
             </Typography>
           </Box>
           <Divider />
-          <TextField
-            variant="outlined"
-            placeholder="Search supplier"
-            fullWidth
-            onChange={(e) => setSearchText(e.target.value)}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-              style: {
-                borderRadius: 6,
-              },
-            }}
-          />
+          {currentStep !== "selectedProducts" && (
+            <TextField
+              variant="outlined"
+              placeholder={
+                currentStep === "products"
+                  ? "Search Products"
+                  : "Select Supplier"
+              }
+              fullWidth
+              onChange={(e) => setSearchText(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+                style: {
+                  borderRadius: 6,
+                },
+              }}
+            />
+          )}
           <Divider sx={{ height: "2px", marginTop: "15px" }} />
 
           {/* BACKUP */}
@@ -155,7 +166,7 @@ const App = () => {
           ) : (
             <ProductList
               setSelectProduct={setSelectProduct}
-              selectedProduct={selectProduct}
+              selectedProduct={selectedProduct}
               searchText={searchText}
               selectedSupplier={selectSupplier}
             />
@@ -180,13 +191,14 @@ const App = () => {
             <SelectedChildProducts />
           ) : currentStep === "products" ? (
             <ProductList
-              setSelectProduct={setSelectProduct}
-              selectedProduct={selectProduct}
               searchText={searchText}
               selectedSupplier={selectSupplier}
             />
           ) : (
-            <Suppliers setSelectSupplier={setSelectSupplier} />
+            <Suppliers
+              setSelectSupplier={setSelectSupplier}
+              searchText={searchText}
+            />
           )}
 
           <Box sx={ctaContainer}>
@@ -242,7 +254,7 @@ const App = () => {
           </Box>
         </Box>
       </Modal>
-    </div>
+    </Box>
   );
 };
 
